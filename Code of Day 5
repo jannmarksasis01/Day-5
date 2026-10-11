@@ -285,3 +285,369 @@ end
 
 
 sh standby - show active hsrp
+
+
+
+
+------------------
+RST HAYP EtherChannel
+@C1-C2 - 
+
+CONF T
+int range e1/2-3
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 30 mode active
+channel-protocol lacp
+
+!c1-A1
+
+int range e0/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 10 mode active
+channel-protocol lacp
+
+
+!c1-A2
+conf t
+int range e0/0, e0/3
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 15 mode active
+channel-protocol lacp
+
+
+
+
+
+------------------------------------------
+@C2 to C1
+CONF T
+int range e1/2-3
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 30 mode active
+channel-protocol lacp
+
+
+
+@C2-A1
+conf t
+int range e0/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 15 mode active
+channel-protocol lacp
+
+@C2-A2
+int range e0/0, e0/3
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 25 mode active
+channel-protocol lacp
+--------------------------------------------------------
+
+
+sh etherchannel summary- to show ether channel
+------------------------------------------------------------
+
+@A1 to C1
+conf t
+int range e0/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 10 mode active
+channel-protocol lacp
+
+
+
+@A1-C2
+conf t
+int range e0/3, e1/0
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 15 mode active
+channel-protocol lacp
+end
+
+
+@A2 - C1
+conf t
+int range e0/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 20 mode active
+channel-protocol lacp
+end
+
+@A2 - C2
+conf t
+int range e0/0, e0/3
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 25 mode active
+channel-protocol lacp
+end
+
+
+-------------------------------------
+!c1 to all
+conf t 
+int range e0/1-3
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 40 mode active
+channel-protocol lacp
+end
+
+
+!c1 to d1
+conf t 
+int range e1/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 11 mode active
+channel-protocol lacp
+end
+
+
+
+@c1 to d2
+
+conf t 
+int range e2/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 12 mode active
+channel-protocol lacp
+end
+
+
+@c2 to c1
+
+conf t 
+int range e0/1-3
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 40 mode active
+channel-protocol lacp
+end
+
+
+@c2 to d1
+conf t 
+int range e1/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 21 mode active
+channel-protocol lacp
+end
+
+@c2 to d2
+
+conf t 
+int range e2/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 22 mode active
+channel-protocol lacp
+end
+
+
+
+@d1 to c1
+
+conf t 
+int range e1/0, e1/3
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 11 mode active
+channel-protocol lacp
+end
+
+
+@d to a1 
+conf t
+int range e1/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 41 mode active
+channel-protocol lacp
+end
+
+@d1 to c2
+conf t
+int range e2/0, e2/3
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 21 mode active
+channel-protocol lacp
+end
+
+@d1 to A2
+conf t
+int range e2/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 42 mode active
+channel-protocol lacp
+end
+
+@d1 to A3
+
+conf t
+int range e3/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 43 mode active
+channel-protocol lacp
+end
+
+
+@d2 to c1
+
+conf t
+int range e1/0, e1/3
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 12 mode active
+channel-protocol lacp
+end
+
+@d2 to c2
+
+conf t
+int range e2/0, e2/3
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 22 mode active
+channel-protocol lacp
+end
+
+d2 to A1
+
+conf t
+int range e1/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 44 mode active
+channel-protocol lacp
+end
+
+@d2 to a2
+
+conf t
+int range e2/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 45 mode active
+channel-protocol lacp
+end
+
+
+@d2 to a3
+
+conf t
+int range e3/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 46 mode active
+channel-protocol lacp
+end
+
+@a1 to d1
+
+conf t
+int range e1/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 41 mode active
+channel-protocol lacp
+end
+
+
+a1 to d2 
+
+conf t
+int range e2/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 44 mode active
+channel-protocol lacp
+end
+
+
+@a2 to d1
+
+conf t
+int range e1/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 42 mode active
+channel-protocol lacp
+end
+
+@a2 to d2
+conf t
+int range e2/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 45 mode active
+channel-protocol lacp
+end
+
+
+@a3 to d1
+conf t
+int range e1/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 45 mode active
+channel-protocol lacp
+end
+
+@a3 to d2 
+conf t
+int range e2/1-2
+switchport trunk encap dot1q
+switchport mode trunk 
+switchport trunk allowed vlan 1-100
+channel-group 45 mode active
+channel-protocol lacp
+end
+
+
+
+
