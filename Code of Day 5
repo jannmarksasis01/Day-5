@@ -1,0 +1,287 @@
+RIVAN - CCNA DAY 5
+
+IPV^ Addressing:
+-IPv4 is 32 bits vs IPV6 128bits
+- IPv4 has 4 Octets {3dots) IPv6 has upto 8 Hextets (7 Colons)
+-valid values of IPv6: 0,1,2,3,4,5,6,7,8,A,B,C,D,E,F - HEXA DECIMAL VALUE
+
+example. 1111:0123:0012:0001:abcd:0abc:9891:abcd
+-deletes 0 from the left side: 
+It allows zero-omission, continous zero can be eliminated, 
+in the place of full zeroes.in place of full zeroes. simply use a double-colon (::)
+
+Rule 1
+
+only one double colon
+
+
+
+IPV6 subnetting:
+design the accenture netwok using face:cafe:fafa:fefe::/64
+to 50 offices. 50 subnets.
+
+Imprement
+conf t
+ipv6 unicast-routing
+int lo101
+ipv6 add face:cafe:fafa:fefe::1/70
+
+int lo102
+ipv6 add fafa:cafe:fafa:fefe::0400:1/70
+
+int lo3
+ipv6 add face:cafe:fafa:fefe:0800:1/70
+
+int lo4 
+ipv6 add face:cafe:fafa:fefe:c00::1/70
+
+end
+
+
+
+
+-------------------------------------------------
+
+
+Cisco Switching
+sh flash
+2 drwx - c3560 ip services- Important
+ROMON- corrupted
+vlan.d80 - essential filevlan.d80 usually refers to a Virtual LAN (VLAN) subinterface or configuration file syntax where d80 represents VLAN ID 80 utilizing 802.1Q (dot1q) tagging.
+
+
+VLAN- 
+
+Managed switch- 
+unmanage switch-
+VLAN 1 - cannot be deleted
+-----
+
+Core taas :
+conf t
+int range fa0/1-12
+switchport mode access
+switchport access vlan 123
+end
+
+sh vlan br
+
+conf t
+no vlan 123
+end
+
+orphan ports- no function no vlan group
+Undo
+
+conf t
+vlan 123 
+name Rivan
+int range fa0/1-12
+switchport mode access
+switchport access vlan 1
+end
+
+------------
+Protocols
+
+The 802.1 powers of Cisco Switches
+
+-802.1q (Dynamic trunking Port)
+
+-802.1d (Spanning tree protocol)
+
+-802.1w (Rapid Spanning Tree)
+
+-802.1x (Port-Security)
+
+-802.1s (Multiple Isntance STP)
+
+
+:802.1q (Dynamic trunking Port)
+Access port - ENd Devices
+Trunk Port - Switch to Swtich
+
+!Convert to Trunk Ports:
+
+Conf t
+int range fa0/10-12 
+no shut
+switchport trunk encapsulation dot1q
+switchport mode trunk
+end
+
+---------------------------------
+:802.1d (Spanning-Tree Protocol) - Prevents Broadcast storm
+sh spanning-tree vlan 1
+
+conf t
+no spanning-tree vlan 1-100
+end
+
+loopbakc and broadcast storm
+
+LIS- 15 seconds Listening  
+LRN- 15 seconds Learning
+FWD- Forwarding
+
+Root Bridge Election -- Election for Alpha Switch
+always lowest Mac Address is the Alpha
+Oldest switch Priority
+
+setting Root Bridhe
+!Core Taas
+conf t
+spanning-tree vlan 1-100 root primary
+end
+
+!Core Baba 
+conf t 
+spanning-tree vlan 1-100 root secondary
+end
+
+
+How to see ports :
+Conf t 
+sh cdp nei
+
+
+--------------------------------
+802.1w - Rapid Spanning-Tree Protocol
+
+@Root Bridge
+conf t
+spanning-tree mode Rapid-pvst
+spanning-tree backbonefast
+spanning-tree portfast bpduguard default
+int range fa0/1-8
+spanning-tree portfast
+end
+
+@Non Root Bridge
+
+conf t
+spanning-tree mode Rapid-pvst
+spanning-tree uplinkfast
+spanning-tree portfast bpduguard default
+int range fa0/1-8
+spanning-tree portfast
+
+sh spanning-tree vlan 1
+
+sh int status err-disabled - to show port error
+
+sh spanning-tree mst conf - show Instances
+
+do sh cdp nei - to see ports
+---------------------------------------
+802.1S Multi Instance STP
+
+@Core taas/Baba step1: Create VTP (VLAN trunking Protocol)
+conf t
+vtp domain ccna
+vtp password pass
+vtp mode server
+vtp version 2
+end
+
+
+
+Step2: Organize VLAN
+@Core Taas
+Conf t
+vlan 11-19
+exit
+vlan 21-29
+exit
+vlan 31-39
+end
+
+@Baba
+enable MSTP
+
+conf t
+spanning-tree mode mst
+spanning-tree mst configuration
+name supermanstp
+revision 1
+instance 1 vlan 11-19
+instance 2 vlan 21-29
+instance 3 vlan 31-39
+end
+sh spanning-tree mst configuration
+
+
+reset the primary secondary roles
+@for rootbridge
+Conf t
+spanning-tree mst 0 root primary
+spanning-tree mst 1 root secondary
+spanning-tree mst 2 root primary
+spanning-tree mst 3 root secondary
+end
+
+@for non root
+Conf t
+spanning-tree mst 0 root Secondary
+spanning-tree mst 1 root primary
+spanning-tree mst 2 root Secondary
+spanning-tree mst 3 root primary
+
+-------------------------------
+802.1x - Port Security
+@Corebaba
+
+conf t
+int f0/6 
+switchport port-security
+switchport port-security mac-address sticky
+switchport port-security maximum 1
+switchport port-security violation shutdown
+end
+
+conf t
+int f0/8 
+switchport port-security
+switchport port-security mac-address sticky
+switchport port-security maximum 1
+switchport port-security violation shutdown
+
+
+@both switch
+trunking 
+conf t 
+int range fa0/10-12
+channel-group 1 mode active
+channel-protocol lacp
+
+sh etherchannel summary
+sh interface po1 | include BW
+
+
+
+
+--------------------- 
+HSRP- Hot Standby Routing Protocol
+
+core taas:
+conf t
+hostname coretaasPLDT
+track 1 int g0/1 line-protocol
+int vlan 1
+standby 1 ip 10.41.1.6 
+standby 1 preempt
+standby 1 priority 150
+standby 1 track 1 decrement 60
+end
+
+@Corebaba (Globe)
+conf t 
+hostname corebabaGlobe
+int vlan 1
+standby 1 ip 10.41.1.6
+standby 1 preempt
+standby 1 priority 100
+end
+
+
+sh standby - show active hsrp
